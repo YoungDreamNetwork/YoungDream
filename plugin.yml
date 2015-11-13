@@ -1,0 +1,35 @@
+name: YDEconomy
+version: 0.0.1
+api: [1.6.0]
+author: labi
+description: A Economy plugin for YoungDream Servers
+main: YDEconomy\YDEconomy
+
+commands:
+  money:
+    usage: 输入 /money 查看梦币
+    permission: YDEconomy.command.money
+  givemoney:
+    usage: 输入 /givemoney 给予梦币
+    permission: YDEconomy.command.givemoney
+  pay:
+    usage: 输入 /pay <玩家> <钱数> 进行转账
+    permission: YDEconomy.command.pay
+  setmoney:
+    usage: 输入 /setmoney 设置梦币
+    permission: YDEconomy.command.setmoney
+	
+
+permissions:
+  YDEconomy:
+    default: true
+    children:
+      YDEconomy.command.money:
+        default: true
+      YDEconomy.command.givemoney:
+        default: op
+      YDEconomy.command.pay:
+        default: true
+      YDEconomy.command.setmoney:
+        default: op
+	
