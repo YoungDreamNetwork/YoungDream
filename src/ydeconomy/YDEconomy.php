@@ -19,6 +19,15 @@ class YDEconomy extends PluginBase implements Listener{
 	private $MysqlTable;
 	private $DB;
 	
+	
+	public static function getInstance(){
+		return self::$instance;
+	}
+	public function onLoad(){
+		self::$instance = $this;
+	}
+	
+	
 	public function onEnable(){
 		$this->getLogger()->info("YDEconomy 加载中!");
 		
@@ -74,7 +83,7 @@ class YDEconomy extends PluginBase implements Listener{
 			$Userdata = $result->fetch_assoc();
 			$result->free();
 			if(isset($Userdata["ID"]) and $Userdata["ID"] == $name){
-				return $Userdata;
+				return $Userdata["Money"];
 			}
 		}
 		return false;
@@ -103,6 +112,100 @@ class YDEconomy extends PluginBase implements Listener{
 		$this->DB->query($sql);
 	}
 	
+	public function AddMoney($name,$money)
+	{
+		$oldmoney=$this->QueryPlayer($name);
+		if($oldmoney==false)
+		{
+			return false;
+		}
+		$table = $this->MysqlTable;
+		$newmoney = $oldmoney + $money;
+		$now=$this->UpdateMoney($name,$newmoney);
+		return $now;
+	}
+	
+	public function ReduceMoney($name,$money)
+	{
+		$oldmoney=$this->QueryPlayer($name);
+		if($oldmoney==false)
+		{
+			return false;
+		}
+		$table = $this->MysqlTable;
+		$newmoney = $oldmoney - $money;
+		$now=$this->UpdateMoney($name,$newmoney);
+		return $now;
+	}
+	
+	public function onCommand(CommandSender $sender, Command $command, $label, array $args)
+		{
+			$name = $sender->getName();
+			switch($command->getName())
+			{
+				case "money":
+					$money=$this->QueryPlayer($name);
+					$sender->sendMessage("你当前拥有梦币：$money");
+				break;
+				
+				case "givemoney":
+					if(isset($args[0]) and is_numeric($args[1]) and isset($args[1]))
+					{
+						$result = $this->QueryPlayer($args[0]);
+							if($result == false)
+							{
+								$sender->sendMessage("不存在玩家 $args[0] 的记录！");
+								return false;
+							}
+							$this->AddMoney($args[0],$args[1]);
+							$sender->sendMessage("已成功给予玩家 $args[0] $args[1]梦币");
+							return true;	
+					}
+					$sender->sendMessage("请输入正确的格式/givemoney <玩家名> <数量>");
+				break;	
+				
+				case "pay":
+					if(isset($args[0]) and is_numeric($args[1]) and isset($args[1]))
+					{
+						$result = $this->QueryPlayer($args[0]);
+							if($result == false)
+							{
+								$sender->sendMessage("不存在玩家 $args[0] 的记录！");
+								return false;
+							}
+						$old = $this->QueryPlayer($name);
+						if($args[1] > $old)
+						{
+							$sender->sendMessage("你现在拥有的梦币数不足！");
+							return false;
+						}
+							$this->ReduceMoney($name,$args[1]);
+							$this->AddMoney($args[0],$args[1]);
+							$sender->sendMessage("已成功给予玩家 $args[0] $args[1]梦币");
+							return true;	
+					}
+					$sender->sendMessage("请输入正确的格式/pay <玩家名> <数量>");
+				break;	
+					
+				case "setmoney":
+					if(isset($args[0]) and is_numeric($args[1]) and isset($args[1]))
+					{
+						$result = $this->QueryPlayer($args[0]);
+							if($result == false)
+							{
+								$sender->sendMessage("不存在玩家 $args[0] 的记录！");
+								return false;
+							}
+							$this->UpdateMoney($args[0],$args[1]);
+							$sender->sendMessage("已成功设置玩家 $args[0]的梦币数量为$args[1]");
+							return true;	
+					}
+					$sender->sendMessage("请输入正确的格式/setmoney <玩家名> <数量>");
+				break;
+
+			}
+		}
+
 	
 	
 
