@@ -26,6 +26,8 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\player\PlayerCommandPreprocessEvent;
 use YDAuth\task;
 use pocketmine\scheduler\PluginTask;
+use pocketmine\scheduler\CallbackTask;
+
 //妈个鸡终于完善了……zzm写的简直了……兼容simpleauth数据
 class YDAuth extends PluginBase implements Listener{
 	private $MysqlHost;
@@ -56,41 +58,37 @@ class YDAuth extends PluginBase implements Listener{
 			$this->MysqlPass =  $this->config->get("MysqlPass");
 			$this->MysqlDB =  $this->config->get("MysqlDB");
 			$this->MysqlTable =  $this->config->get("MysqlTable");
-			$mode =  $this->config->get("MWWMode");
-			if($mode == "NoMove"){
-				$this->mode = 1;
-				$mm = "NoMove";
-			}else{
-				$this->mode = 2;
-				$mm = "CanMove";
-			}
+			
 			$this->getLogger()->info(TextFormat::GREEN."MySql_Host:".$this->MysqlHost);
 			$this->getLogger()->info(TextFormat::GREEN."MySql_User:".$this->MysqlUser);
 			$this->getLogger()->info(TextFormat::GREEN."MySql_Password:".$this->MysqlPass);
 			$this->getLogger()->info(TextFormat::GREEN."MySql_Database:".$this->MysqlDB);
 			$this->getLogger()->info(TextFormat::GREEN."MySql_Table:".$this->MysqlTable);
-			$this->getLogger()->info(TextFormat::GREEN."MyWholeWorldMode:".$mm);
-			$this->getLogger()->info(TextFormat::GREEN."MyWholeWorld Set Check Done !!!");
+			$this->getLogger()->info(TextFormat::GREEN."Mysql检查完毕!!!");
 		}else{
-			$this->getLogger()->info(TextFormat::RED."MyWholeWorld is Unset !!!");
+			$this->getLogger()->info(TextFormat::RED."M尚未设置Mysql !!!");
 			$this->config->set("MysqlHost","127.0.0.1");
 			$this->config->set("MysqlUser","root");
 			$this->config->set("MysqlPass","password");
 			$this->config->set("MysqlDB","user");
 			$this->config->set("MysqlTable","Players");
-			$this->config->set("MWWMode","NoMove");
 			$this->config->save();
 		}
 		$testresult = $this->MysqlConnect();
 		$this->getLogger()->info($testresult);
-		$this->getLogger()->info("MyWholeWorld Loaded !!!!");	
-		$this->getServer()->getScheduler()->scheduleRepeatingTask(new task($this,$this->DB),1800);
-		
+		$this->getLogger()->info("YDAuth Loaded !!!!");	
+		$this->getServer()->getScheduler()->scheduleRepeatingTask(new CallbackTask([$this,"Mysqlping"]), 1000);
+
 	}
 	
-	public function getPluginDir(){
-		return $this->getServer()->getDataPath()."plugins/MWWConfigs/";
+	public function Mysqlping()
+	{
+		$task = new SignAsyncTask();
+		$task->ping($this->DB,$this);
+		$this->getServer()->getScheduler()->scheduleAsyncTask($task);
+		$this->atask=$task;
 	}
+	
 	
 	public function MysqlConnect(){
 		$this->DB = new \mysqli($this->MysqlHost,$this->MysqlUser,$this->MysqlPass,$this->MysqlDB);
@@ -124,6 +122,10 @@ class YDAuth extends PluginBase implements Listener{
 	}
 	
 	public function QueryPlayer($name){
+		if($this->atask->getstatus == false)
+		{
+			$this->DB=$this->MysqlConnect();
+		}
 		$sql = "SELECT * FROM $this->MysqlTable where ID = '$name'";
 		$result = $this->DB->query($sql);
 		if($result instanceof \mysqli_result){
@@ -197,7 +199,7 @@ class YDAuth extends PluginBase implements Listener{
 		$name = $event->getPlayer()->getName();
 		if(isset($this->players[$name])){
 			$ppp = &$this->players[$name];
-			if($ppp["IsLogin"] == 0 and $this->mode == 1){
+			if($ppp["IsLogin"] == 0){
 				$event->getPlayer()->sendTip("请先登录！");
 				$event->setCancelled();
 			}
@@ -224,7 +226,7 @@ class YDAuth extends PluginBase implements Listener{
 				if(isset($this->players[$name])){
 					$ppp = &$this->players[$name];
 					if($ppp["IsLogin"] == 0 ){
-						$event->getPlayer()->sendTip("请先登录！");
+						$p->sendTip("请先登录！");
 						$event->setCancelled();
 					}
 				}
@@ -258,7 +260,7 @@ class YDAuth extends PluginBase implements Listener{
 		$name = $event->getPlayer()->getName();
 		if(isset($this->players[$name])){
 			$ppp = &$this->players[$name];
-			if($ppp["IsLogin"] == 0 and $this->mode == 1){
+			if($ppp["IsLogin"] == 0){
 				$event->getPlayer()->sendTip("请先登录！");
 				$event->setCancelled();
 			}
