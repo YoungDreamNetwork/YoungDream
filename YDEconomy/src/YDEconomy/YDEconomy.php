@@ -58,7 +58,7 @@ class YDEconomy extends PluginBase implements Listener{
 			$this->config->set("MysqlTable","Players");
 			$this->config->save();
 		}
-		$this->DB = $this->MysqlConnect();
+		$this->MysqlConnect();
 		if ($this->DB->connect_error){
 			$result = TextFormat::RED."Mysql连接失败！";
 		}else{
