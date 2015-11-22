@@ -28,7 +28,6 @@ use YDAuth\task;
 use pocketmine\scheduler\PluginTask;
 use pocketmine\scheduler\CallbackTask;
 
-//妈个鸡终于完善了……zzm写的简直了……兼容simpleauth数据
 class YDAuth extends PluginBase implements Listener{
 	private $MysqlHost;
 	private $MysqlUser;

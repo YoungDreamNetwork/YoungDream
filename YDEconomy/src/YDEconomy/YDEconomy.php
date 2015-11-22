@@ -10,6 +10,8 @@ use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\plugin\Plugin;
 use pocketmine\event\player\PlayerJoinEvent;
+use YDEconomy\task;
+use pocketmine\scheduler\PluginTask;
 
 class YDEconomy extends PluginBase implements Listener{
 	private $MysqlHost;
@@ -56,14 +58,27 @@ class YDEconomy extends PluginBase implements Listener{
 			$this->config->set("MysqlTable","Players");
 			$this->config->save();
 		}
-		$this->DB = new \mysqli($this->MysqlHost,$this->MysqlUser,$this->MysqlPass,$this->MysqlDB);
+		$this->DB = $this->MysqlConnect();
 		if ($this->DB->connect_error){
 			$result = TextFormat::RED."Mysql连接失败！";
 		}else{
 			$result = TextFormat::GREEN."Mysql连接成功！";
 		}
+		
+		$this->getServer()->getScheduler()->scheduleRepeatingTask(new task($this,$this->DB),1800);
 		$this->getLogger()->info($result);
 		$this->getLogger()->info("YDEconomy加载完毕");	
+	}
+	
+	
+	public function MysqlConnect(){
+		$this->DB = new \mysqli($this->MysqlHost,$this->MysqlUser,$this->MysqlPass,$this->MysqlDB);
+		if ($this->DB->connect_error){
+			$result = TextFormat::RED."ERROR, Connection Failed";
+		}else{
+			$result = TextFormat::GREEN."Mysql Connect Success!";
+		}
+		return $result;
 	}
 	
 	
