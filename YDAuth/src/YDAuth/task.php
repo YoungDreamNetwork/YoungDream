@@ -1,31 +1,25 @@
 <?php
-
 namespace YDAuth;
-
 use pocketmine\scheduler\PluginTask;
-use pocketmine\scheduler\AsyncTask;
-use pocketmine\Server;
-
-
-class YDAuth extends AsyncTask{
+class task extends PluginTask{
 	
+	private $plugin;
 	
-	private $db;
-	
-	public function ping($db,$main){
-		$this->db = $db;
-		$this->main=$main;
+	public function __construct(YDAuth $plugin,\mysqli $db)
+	{
+		$this->plugin=$plugin;
+		$this->db=$db;
+		parent::__construct($plugin);
 	}
 	
 	public function onRun($ck)
 	{
 		$status=$this->db->ping();
-		$this->getstatus=$stauts;
+		$this-plugin->status=$stauts;
 		if($status == false)
 		{
 			$this->main->MysqlConnect();
 		}
 	}
-
 	
 }

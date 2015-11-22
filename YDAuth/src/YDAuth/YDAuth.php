@@ -36,21 +36,16 @@ class YDAuth extends PluginBase implements Listener{
 	private $MysqlDB;
 	private $MysqlTable;
 	private $DB;
-	private $mode = 1;
 	private $players = [];
+	private static $instance;
+	
 	
 	public function onEnable(){
-		$this->getLogger()->info("MyWholeWorld Is Loading!");
 		if(!is_dir($this->getPluginDir())){
-			@mkdir($this->getServer()->getDataPath()."plugins/MyWholeWorld");
+			@mkdir($this->getServer()->getDataPath()."plugins/YDAuth");
 			
 		}
 		$this->getServer()->getPluginManager()->registerEvents($this,$this);
-		$this->database = new Config($this->getDataFolder() . "verson.yml", Config::YAML, array());
-		  if(!$this->database->exists("Version") || !is_numeric($this->database->get("Version"))){
-            $this->database->set("Version", "MyWholeWorld_V1 Beta1");
-            $this->database->save();
-        }
 		$this->config = new Config($this->getDataFolder() . "config.yml", Config::YAML, array());
 		if($this->config->exists("MysqlHost") AND $this->config->get("MysqlHost") !== array()){
 			$this->MysqlHost =  $this->config->get("MysqlHost");
@@ -66,7 +61,7 @@ class YDAuth extends PluginBase implements Listener{
 			$this->getLogger()->info(TextFormat::GREEN."MySql_Table:".$this->MysqlTable);
 			$this->getLogger()->info(TextFormat::GREEN."Mysql检查完毕!!!");
 		}else{
-			$this->getLogger()->info(TextFormat::RED."M尚未设置Mysql !!!");
+			$this->getLogger()->info(TextFormat::RED."尚未设置Mysql !!!");
 			$this->config->set("MysqlHost","127.0.0.1");
 			$this->config->set("MysqlUser","root");
 			$this->config->set("MysqlPass","password");
@@ -77,18 +72,14 @@ class YDAuth extends PluginBase implements Listener{
 		$testresult = $this->MysqlConnect();
 		$this->getLogger()->info($testresult);
 		$this->getLogger()->info("YDAuth Loaded !!!!");	
-		$this->getServer()->getScheduler()->scheduleRepeatingTask(new CallbackTask([$this,"Mysqlping"]), 1000);
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new task($this,$this->DB),1800);
+	}
+	
+	public static function getInstance(){
+        return self::$instance;
+    }
+	
 
-	}
-	
-	public function Mysqlping()
-	{
-		$task = new SignAsyncTask();
-		$task->ping($this->DB,$this);
-		$this->getServer()->getScheduler()->scheduleAsyncTask($task);
-		$this->atask=$task;
-	}
-	
 	
 	public function MysqlConnect(){
 		$this->DB = new \mysqli($this->MysqlHost,$this->MysqlUser,$this->MysqlPass,$this->MysqlDB);
