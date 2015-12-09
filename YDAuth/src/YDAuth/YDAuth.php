@@ -329,6 +329,6 @@ class YDAuth extends PluginBase implements Listener{
 	private function hash($salt, $password){
 		return bin2hex(hash("sha512", $password . $salt, true) ^ hash("whirlpool", $salt . $password, true));
 	}
-
+//手机上码代码有点蛋疼
 }
  
