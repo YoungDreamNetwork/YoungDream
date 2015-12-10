@@ -77,6 +77,14 @@ class YDAuth extends PluginBase implements Listener{
 	public static function getInstance(){
         return self::$instance;
     }
+    public function receive($p,$value){//准备改成asynctask
+    if($value){
+    $this->players[$p]["IsLogin"]=1;//回传项目:为布尔值
+    }else{
+    $this->players[$p]["IsLogin"]=0;//回传项目:为布尔值
+    $this->getServer()->getPlayerByName($p)->sendMessage("抱歉您的密码不正确");
+    }
+    }
 	
 
 	
