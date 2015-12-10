@@ -77,15 +77,28 @@ class YDAuth extends PluginBase implements Listener{
 	public static function getInstance(){
         return self::$instance;
     }
-    public function receive($p,$value){//准备改成asynctask
+    public function receive($pn,$value){//准备改成asynctask
     if($value){
-    $this->players[$p]["IsLogin"]=1;//回传项目:为布尔值
+    $this->players[$pn]["IsLogin"]=1;//回传项目:为布尔值
     }else{
-    $this->players[$p]["IsLogin"]=0;//回传项目:为布尔值
-    $this->getServer()->getPlayerByName($p)->sendMessage("抱歉您的密码不正确");
+    $this->players[$pn]["IsLogin"]=0;//回传项目:为布尔值
+    $this->getServer()->getPlayerByName($pn)->sendMessage("抱歉您的密码不正确");//可能数据库重复写入也会发生
     }
     }
-	
+    
+	public function datasend($pn){
+	    $config = array(
+			"ID" => $player->getName(),
+			"IP" => $player->getAddress(),
+			"Time" => time(),
+			"IsNew" => 1,
+			"IsLogin" => 0,
+			"IsVerify" => 0,
+			"Check" => $vc,
+        	);
+		$this->players[$player->getName()] = $config;
+		return $vc;//代码略繁琐啊，有时间重新写
+	}
 
 	
 	public function MysqlConnect(){
