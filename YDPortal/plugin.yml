@@ -1,0 +1,6 @@
+name: YDPortal
+version: 0.0.1
+api: [1.6.0]
+author: labi
+description: YDPortal,A simple portal plugin
+main: YDPortal\YDPortal
