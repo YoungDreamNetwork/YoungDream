@@ -2,15 +2,15 @@ name: YDEconomy
 version: 0.0.1
 api: [1.6.0]
 author: labi
-description: A Economy plugin for YoungDream Servers
+description: A Economy plugin for YoungDream Servers.For RMB.
 main: YDEconomy\YDEconomy
 
 commands:
   money:
-    usage: 输入 /money 查看梦币
+    usage: 输入 /money 查看梦核
     permission: YDEconomy.command.money
   givemoney:
-    usage: 输入 /givemoney 给予梦币
+    usage: 输入 /givemoney 给予梦核
     permission: YDEconomy.command.givemoney
   pay:
     usage: 输入 /pay <玩家> <钱数> 进行转账
