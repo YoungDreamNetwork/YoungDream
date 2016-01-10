@@ -18,6 +18,9 @@ commands:
   setmoney:
     usage: 输入 /setmoney 设置梦币
     permission: YDEconomy.command.setmoney
+  card:
+    usage: 输入/card <激活码> 兑换梦币
+    permission: YDEconomy.command.card
 	
 
 permissions:
@@ -32,4 +35,6 @@ permissions:
         default: true
       YDEconomy.command.setmoney:
         default: op
+      YDEconomy.command.card:
+        default: true
 	
