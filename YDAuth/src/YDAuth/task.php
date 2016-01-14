@@ -6,11 +6,10 @@ class task extends AsyncTask{
 	
 	private $plugin;
 	
-	public function __construct($pluginname,$db,$table,$mode,$k1,$k2,$v,$cb)
+	public function __construct($pluginname,$db,$mode,$k1,$k2,$v,$cb)
 	{
 	    $this->pluginname=$pluginname;//插件名称
 		$this->db=$db;//mysql数据库(配置)
-		$this->table = $table;//table名
 		$this->mode=$mode;//查询模式
 		$this->k1=$k1;//键值1：通指玩家名
 		$this->k2=$k2;//键值2：赋值2
@@ -31,7 +30,7 @@ class task extends AsyncTask{
 	        
 	        
 	        case "set"://支持：单变量与数组
-	        $db->query("UPDATE ".$this->table." SET ".$this->k2." ='".$this->v."' where ID = '".$this->k1."' ");
+	        $db->query("UPDATE ".$this->db["table"]." SET ".$this->k2." ='".$this->v."' where ID = '".$this->k1."' ");
 	        break;
 	        
 	        
@@ -50,7 +49,7 @@ class task extends AsyncTask{
 	           $表名="'".$k."'";
 	       }
 	   }
-	   $this->db->query = "insert into ".$this->table."(".$表名.") values(".$值.")";
+	   $this->db->query = "insert into ".$this->db["table"]."(".$表名.") values(".$值.")";
 		/*
 		传入$this->v格式：
 		$this->v = array(
@@ -60,7 +59,7 @@ class task extends AsyncTask{
 		"d"=>"vd"
 				)；
 				相当于：
-		$sql = "insert into ".$this->table."(a,b,c,d) values('va','vb','vc','vd')";
+		$sql = "insert into ".$this->db["table"]."(a,b,c,d) values('va','vb','vc','vd')";
 		*/
 		$this->setResult(true);
 	        break;
