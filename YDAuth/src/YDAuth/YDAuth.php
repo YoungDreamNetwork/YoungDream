@@ -29,87 +29,42 @@ use pocketmine\scheduler\PluginTask;
 use pocketmine\scheduler\CallbackTask;
 
 class YDAuth extends PluginBase implements Listener{
-	private $MysqlHost;
-	private $MysqlUser;
-	private $MysqlPass;
-	private $MysqlDB;
-	private $MysqlTable;
-	private $DB;
+	private $cfgdata;
 	private $players = [];
 	private static $instance;
+	private $default = 
+	    array(
+	    "host"=>"127.0.0.1",
+	    "user"=>"root",
+	    "pass"=>"passwd",
+	    "dbname"=>"user",
+	    "table"=>"Players"
+	    );
 	
 	
 	public function onEnable(){
-		if(!is_dir($this->getPluginDir())){
-			@mkdir($this->getServer()->getDataPath()."plugins/YDAuth");
-			
-		}
+		
 		$this->getServer()->getPluginManager()->registerEvents($this,$this);
-		$this->config = new Config($this->getDataFolder() . "config.yml", Config::YAML, array());
-		if($this->config->exists("MysqlHost") AND $this->config->get("MysqlHost") !== array()){
-			$this->MysqlHost =  $this->config->get("MysqlHost");
-			$this->MysqlUser =  $this->config->get("MysqlUser");
-			$this->MysqlPass =  $this->config->get("MysqlPass");
-			$this->MysqlDB =  $this->config->get("MysqlDB");
-			$this->MysqlTable =  $this->config->get("MysqlTable");
-			
-			$this->getLogger()->info(TextFormat::GREEN."MySql_Host:".$this->MysqlHost);
-			$this->getLogger()->info(TextFormat::GREEN."MySql_User:".$this->MysqlUser);
-			$this->getLogger()->info(TextFormat::GREEN."MySql_Password:".$this->MysqlPass);
-			$this->getLogger()->info(TextFormat::GREEN."MySql_Database:".$this->MysqlDB);
-			$this->getLogger()->info(TextFormat::GREEN."MySql_Table:".$this->MysqlTable);
-			$this->getLogger()->info(TextFormat::GREEN."Mysql检查完毕!!!");
-		}else{
-			$this->getLogger()->info(TextFormat::RED."尚未设置Mysql !!!");
-			$this->config->set("MysqlHost","127.0.0.1");
-			$this->config->set("MysqlUser","root");
-			$this->config->set("MysqlPass","password");
-			$this->config->set("MysqlDB","user");
-			$this->config->set("MysqlTable","Players");
-			$this->config->save();
-		}
-		$testresult = $this->MysqlConnect();
-		$this->getLogger()->info($testresult);
-		$this->getLogger()->info("YDAuth Loaded !!!!");	
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new task($this,$this->DB),1800);
 	}
 	
+	public function close($aaa,$bbb){
+	    $this->getServer()->shutdown();
+	    $this->getLogger()->info(TextFormat::GREEN."多次连接失败，自动关闭");
+	}
+	
+	
+	public function readconfig(){
+	    @mkdir($this->getDataPath());
+		$config = new Config($this->getDataFolder() . "config.yml", Config::YAML, array());
+		if($config->exists("host") AND $config->get("host") !== array()){
+		    foreach($this->default as $k=>$v){
+		        $this->cfgdata[$k] = $config->get($k,$v);
+		    }
+			$this->getLogger()->info(TextFormat::GREEN."Mysql检查完毕!!!");
+	}
 	public static function getInstance(){
         return self::$instance;
     }
-    public function receive($pn,$value){//准备改成asynctask
-    if($value){
-    $this->players[$pn]["IsLogin"]=1;//回传项目:为布尔值
-    }else{
-    $this->players[$pn]["IsLogin"]=0;//回传项目:为布尔值
-    $this->getServer()->getPlayerByName($pn)->sendMessage("抱歉您的密码不正确");//可能数据库重复写入也会发生
-    }
-    }
-    
-	public function datasend($pn){
-	    $config = array(
-			"ID" => $player->getName(),
-			"IP" => $player->getAddress(),
-			"Time" => time(),
-			"IsNew" => 1,
-			"IsLogin" => 0,
-			"IsVerify" => 0,
-			"Check" => $vc,
-        	);
-		$this->players[$player->getName()] = $config;
-		return $vc;//代码略繁琐啊，有时间重新写
-	}
-
-	
-	public function MysqlConnect(){
-		$this->DB = new \mysqli($this->MysqlHost,$this->MysqlUser,$this->MysqlPass,$this->MysqlDB);
-		if ($this->DB->connect_error){
-			$result = TextFormat::RED."ERROR, Connection Failed";
-		}else{
-			$result = TextFormat::GREEN."Mysql Connect Success!";
-		}
-		return $result;
-	}
 	
 	public function onPlayerJoin(PlayerJoinEvent $event){
 		$player = $event->getPlayer();
