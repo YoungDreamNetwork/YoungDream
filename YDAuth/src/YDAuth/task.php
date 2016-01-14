@@ -9,7 +9,7 @@ class task extends AsyncTask{
 	public function __construct($pluginname,$db,$table,$mode,$k1,$k2,$v,$cb)
 	{
 	    $this->pluginname=$pluginname;//插件名称
-		$this->db=$db;//mysql数据库
+		$this->db=$db;//mysql数据库(配置)
 		$this->table = $table;//table名
 		$this->mode=$mode;//查询模式
 		$this->k1=$k1;//键值1：通指玩家名
@@ -20,13 +20,24 @@ class task extends AsyncTask{
 	
 	public function onRun()
 	{
+	    $db = new \mysqli($this->db["host"],$this->db["user"],$this->db["pass"],$this->db["dbname"]);
+	    
 	    switch($this->mode){
 	        case "query";
-	        $this->setResult=($this->db->query("SELECT * FROM ".$this->table." where ID = '".$this->k1."'"));
+	        $r=($db->query("SELECT * FROM ".$this->table." where ID = '".$this->k1."'"));
+	        $this->setResult($r);
 	        break;
+	        
+	        
+	        
 	        case "set"://支持：单变量与数组
+	        $db->query("UPDATE ".$this->table." SET ".$this->k2." ='".$this->v."' where ID = '".$this->k1."' ");
 	        break;
+	        
+	        
+	        
 	        case "create";
+	        
 	   foreach($this->v as $k=>$v){
 	       if(isset($表名)){
 	           $表名=$表名.",".$k;
@@ -51,8 +62,23 @@ class task extends AsyncTask{
 				相当于：
 		$sql = "insert into ".$this->table."(a,b,c,d) values('va','vb','vc','vd')";
 		*/
-		$this->Setresult(true);
+		$this->setResult(true);
 	        break;
+	        
+	        
+	        
+	        case "connect":
+	            if ($db->connect_error){
+            $result = "连接数据库失败";
+            exit(true);
+        }else{
+            $result = "测试连接数据库成功";
+        }
+        return $result;
+	        break;
+	        
+	        
+	        
 	    }
 	}
 	public function onCompletion(Server server){
