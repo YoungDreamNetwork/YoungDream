@@ -20,7 +20,20 @@ class task extends AsyncTask{
 	public function onRun()
 	{
 	    $db = new \mysqli($this->db["host"],$this->db["user"],$this->db["pass"],$this->db["dbname"]);
-	    
+	    if ($db->connect_error){
+            echo("=========================[YDAuth-asynctask]========================== \n ================MySQL服务器连接失败=================== \n");
+            $db = new \mysqli($this->db["host"],$this->db["user"],$this->db["pass"],$this->db["dbname"]);
+            if($db->connect_error){
+            echo("=========================[YDAuth-asynctask]========================== \n ================MySQL服务器连接失败=================== \n");
+             $db = new \mysqli($this->db["host"],$this->db["user"],$this->db["pass"],$this->db["dbname"]);
+            if($db->connect_error){
+            echo("=========================[YDAuth-asynctask]========================== \n ================MySQL服务器连接失败=================== \n =====================多次连接服务器失败，关闭服务器============");
+            
+            $this->cb = "close";
+            $this->setResult(false);
+            }
+            }
+	    }
 	    switch($this->mode){
 	        case "query";
 	        $r=($db->query("SELECT * FROM ".$this->table." where ID = '".$this->k1."'"));
@@ -66,19 +79,12 @@ class task extends AsyncTask{
 	        
 	        
 	        
-	        case "connect":
-	            if ($db->connect_error){
-            $result = "连接数据库失败";
-            exit(true);
-        }else{
-            $result = "测试连接数据库成功";
-        }
-        return $result;
-	        break;
+	            
 	        
 	        
 	        
 	    }
+        }
 	}
 	public function onCompletion(Server server){
 	    $爆炸=$this->cb;
