@@ -82,7 +82,7 @@ class SmallLandGenerator extends Generator{
 						for ($z=0; $z < 16; $z++) { 
 							for ($y=0; $y < 10; $y++) { 
 								if ($x < 4 OR $z < 4) {
-									$this->chunk1->setBlockId($x, $y, $z, Block::PLANK);//木方块
+									$this->chunk1->setBlockId($x, $y, $z, Block::AIR);//木方块
 								}elseif($x > 4 AND $z > 4){
 									$this->chunk1->setBlockId($x, $y, $z, Block::GRASS);//草方块
 									$this->chunk1->setBlockId(4, 11, 4, Block::GLOWING_REDSTONE_ORE);
@@ -128,7 +128,7 @@ class SmallLandGenerator extends Generator{
 						for ($z=0; $z < 16; $z++) { 
 							for ($y=0; $y < 10; $y++) { 
 								if ($x < 4) {
-									$this->chunk2->setBlockId($x, $y, $z, Block::PLANK);//木方块
+									$this->chunk2->setBlockId($x, $y, $z, Block::AIR);//木方块
 								}elseif($x > 4){
 									$this->chunk2->setBlockId($x, $y, $z, Block::GRASS);//草方块
 								}else{
@@ -173,7 +173,7 @@ class SmallLandGenerator extends Generator{
 						for ($z=0; $z < 16; $z++) { 
 							for ($y=0; $y < 10; $y++) { 
 								if ($x < 4 OR $z > 11) {
-									$this->chunk3->setBlockId($x, $y, $z, Block::PLANK);//木方块
+									$this->chunk3->setBlockId($x, $y, $z, Block::AIR);//木方块
 								}elseif($x > 4 AND $z <11){
 									$this->chunk3->setBlockId($x, $y, $z, Block::GRASS);//草方块
 								}else{
@@ -218,7 +218,7 @@ class SmallLandGenerator extends Generator{
 						for ($z=0; $z < 16; $z++) { 
 							for ($y=0; $y < 10; $y++) { 
 								if ($z < 4) {
-									$this->chunk4->setBlockId($x, $y, $z, Block::PLANK);//木方块
+									$this->chunk4->setBlockId($x, $y, $z, Block::AIR);//木方块
 								}elseif($z > 4){
 									$this->chunk4->setBlockId($x, $y, $z, Block::GRASS);//草方块
 								}else{
@@ -263,7 +263,7 @@ class SmallLandGenerator extends Generator{
 						for ($z=0; $z < 16; $z++) { 
 							for ($y=0; $y < 10; $y++) { 
 								if ($x > 11 OR $z < 4) {
-									$this->chunk5->setBlockId($x, $y, $z, Block::PLANK);//木方块
+									$this->chunk5->setBlockId($x, $y, $z, Block::AIR);//木方块
 								}elseif($x < 11 AND $z > 4){
 									$this->chunk5->setBlockId($x, $y, $z, Block::GRASS);//草方块
 								}else{
@@ -308,7 +308,7 @@ class SmallLandGenerator extends Generator{
 						for ($z=0; $z < 16; $z++) { 
 							for ($y=0; $y < 10; $y++) { 
 								if ($x > 11) {
-									$this->chunk6->setBlockId($x, $y, $z, Block::PLANK);//木方块
+									$this->chunk6->setBlockId($x, $y, $z, Block::AIR);//木方块
 								}elseif($x < 11){
 									$this->chunk6->setBlockId($x, $y, $z, Block::GRASS);//草方块
 								}else{
@@ -353,7 +353,7 @@ class SmallLandGenerator extends Generator{
 						for ($z=0; $z < 16; $z++) { 
 							for ($y=0; $y < 10; $y++) { 
 								if ($x > 11 OR $z > 11) {
-									$this->chunk7->setBlockId($x, $y, $z, Block::PLANK);//木方块
+									$this->chunk7->setBlockId($x, $y, $z, Block::AIR);//木方块
 								}elseif($x < 11 AND $z < 11){
 									$this->chunk7->setBlockId($x, $y, $z, Block::GRASS);//草方块
 								}else{
@@ -398,7 +398,7 @@ class SmallLandGenerator extends Generator{
 						for ($z=0; $z < 16; $z++) { 
 							for ($y=0; $y < 10; $y++) { 
 								if ($z > 11) {
-									$this->chunk8->setBlockId($x, $y, $z, Block::PLANK);//木方块
+									$this->chunk8->setBlockId($x, $y, $z, Block::AIR);//木方块
 								}elseif($z < 11){
 									$this->chunk8->setBlockId($x, $y, $z, Block::GRASS);//草方块
 								}else{
