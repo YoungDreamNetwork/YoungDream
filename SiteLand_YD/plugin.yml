@@ -1,0 +1,49 @@
+name: SiteLand
+main: SiteLand\SiteLand
+version: 1.2.9
+api: [1.12.0]
+depend: [EconomyAPI]
+load: STARTUP
+author: MUedsa,Mentha_Haplocalyx，labi
+
+permissions:
+ uniteland.zzx:
+  default: true
+  description: "Allows access to all UniteRPG features."
+ uniteland.du:
+  default: op
+  description: "Allows access to Player UniteRPG features."
+
+commands:
+ giveland:
+  description: check my RPGinfo
+  usage: /giveland [ 名字 ]
+  permission: uniteland.zzx
+ guest:
+  description: add my guest
+  usage: /guest [ 名字 ]
+  permission: uniteland.zzx
+ myguest:
+  description: check my guests
+  usage: /myguest
+  permission: uniteland.zzx
+ landinfo:
+  description: check land info
+  usage: /landinfo
+  permission: uniteland.zzx
+ mylands:
+  description: check my lands
+  usage: /mylands
+  permission: uniteland.zzx
+ seelands:
+  description: check other's lands
+  usage: /seelands [ 名字 ]
+  permission: uniteland.zzx
+ tpland:
+  description: go to other's land
+  usage: /tpland [ 地皮编号 ]
+  permission: uniteland.zzx
+ checkhost:
+  description: check land's host
+  usage: /checkhost [ 地皮编号 ]
+  permission: uniteland.zzx
