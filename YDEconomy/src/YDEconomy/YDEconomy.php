@@ -10,12 +10,12 @@ use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\plugin\Plugin;
 use pocketmine\event\player\PlayerJoinEvent;
+use ZXDA_Connector\ZXDA_Connector;
 
 class YDEconomy extends PluginBase implements Listener{
 	
-	public $plist=[];
+
 	public $instance;
-	public $money;
 	public $clist=[];
 	public $csave;
 
@@ -25,56 +25,26 @@ class YDEconomy extends PluginBase implements Listener{
 	public function onLoad(){
 		self::$instance = $this;
 	}
-	 public function onDisable()
-	 {
-		 $this->csave->setAll($this->clist);
-		 $this->csave->save();
-		 $this->money->setAll($this->plist);
-		 $this->money->save();
-
-	 }
 	
 	public function onEnable(){
 		$this->getLogger()->info("YDEconomy 加载中!");
 		
 		$this->getServer()->getPluginManager()->registerEvents($this,$this);
-		
-		$this->money = new Config($this->getDataFolder() . "money.yml", Config::YAML, array());
+		if(!ZXDA_Connector::getAPIVersion())
+		{
+			$this->getLogger()->warning("无法连接至ZXDA服务器！已关闭插件！");
+			$this->getServer()->disablePlugins();
+		}
 		$this->csave = new Config($this->getDataFolder()."card.yml",Config::YAML,array());
-		$this->plist=$this->money->getAll();
 		$this->clist=$this->csave->getAll();
 		$this->getLogger()->info("YDEconomy加载完毕");	
 	}
 	
 	
-	public function save()
-	{
-		if(!isset($n))
-		{
-			$n=0;
-			return true;
-		}
-		$n=$n+1;
-		if($n>50)
-		{
-			$this->money->setAll($this->plist);
-			$this->money->save();
-			return true;
-		}
-		return true;
-	}
-
-
 
 	public function onPlayerJoin(PlayerJoinEvent $event){
 		$player = $event->getPlayer();
 		$name = $player->getName();
-		if(!in_array($name,$this->plist))
-		{
-			$this->CreatePlayer($name,0);
-			$player->sendMessage("[梦灵]欢迎来到轻梦，您当前有 0 梦核。");
-			return true;			
-		}
 		$pmoney=$this->SeeMoney($name);
 		$player->sendMessage("[梦灵]欢迎回来，您当前有 $pmoney 梦核。");
 	}
@@ -83,15 +53,8 @@ class YDEconomy extends PluginBase implements Listener{
 	 * @param $name
 	 * @return int
      */
-	public function SeeMoney($name){
-		$this->save();
-		if(!in_array($name,$this->plist))
-		{
-			$this->CreatePlayer($name,0);
-			return 0;
-		}
-
-		return $this->plist[$name];
+	public function SeeMoney($PlayerName){
+		return ZXDA_Connector::getCoupons($PlayerName);
 	}
 
 	/**
@@ -99,14 +62,9 @@ class YDEconomy extends PluginBase implements Listener{
 	 * @param $money
 	 * @return int
      */
-	public function SetMoney($name, $money){
-		$this->save();
-		if(!in_array($name,$this->plist))
-		{
-			$this->CreatePlayer($name,0);
-			return 0;
-		}
-		return $this->plist[$name]=$money;
+	public function SetMoney($PlayerName, $Count){
+		ZXDA_Connector::setCoupons($PlayerName,$Count);
+		return $this->SeeMoney($PlayerName);
 	}
 
 
@@ -115,31 +73,10 @@ class YDEconomy extends PluginBase implements Listener{
 	 * @param $money
 	 * @return bool
      */
-	public function CreatePlayer($name, $money){
-		$this->save();
-		if(!in_array($name,$this->plist))
-		{
-			return false;
-		}
-		$this->plist[$name]=$money;
-		return $this->plist[$name];
-	}
-
-	/**
-	 * @param $name
-	 * @param $money
-	 * @return bool
-     */
-	public function AddMoney($name, $money)
+	public function AddMoney($PlayerName, $Count)
 	{
-		$this->save();
-		if(!in_array($name,$this->plist))
-		{
-			$this->CreatePlayer($name,0);
-			return false;
-		}
-		$this->plist[$name]=$this->plist[$name] + $money;
-		return $this->plist[$name];
+		ZXDA_Connector::addCoupons($PlayerName,$Count);
+		return $this->SeeMoney($PlayerName);
 	}
 
 	/**
@@ -147,29 +84,34 @@ class YDEconomy extends PluginBase implements Listener{
 	 * @param $money
 	 * @return bool
      */
-	public function ReduceMoney($name, $money)
+	public function ReduceMoney($PlayerName, $Count)
 	{
-		$this->save();
-		if(!in_array($name,$this->plist))
+		if($this->SeeMoney($PlayerName)<$Count)
 		{
-			$this->CreatePlayer($name,0);
 			return false;
 		}
-		$this->plist[$name]=$this->plist[$name]-$money;
-		return $this->plist[$name];
+		ZXDA_Connector::takeCoupons($PlayerName,$Count);
+		return $this->SeeMoney($PlayerName);
 	}
 
-	public function card($name,$pass)
+
+	/**
+	 * @param $name
+	 * @param $pass
+	 * @return bool
+     */
+	public function card($name, $pass)
 	{
 		if(in_array($pass,$this->clist))
 		{
 			$this->AddMoney($name,$this->clist[$pass]);
 			unset($this->clist[$pass]);
+			$this->csave->save();
 			return $this->clist[$pass];
-
 		}
 		return false;
 	}
+
 
 	public function onCommand(CommandSender $sender, Command $command, $label, array $args)
 		{
