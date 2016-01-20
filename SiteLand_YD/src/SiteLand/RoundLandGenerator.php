@@ -73,7 +73,10 @@ class RoundLandGenerator extends Generator
                 }
             }
         }
-
+        $chunk = clone $this->chunk1;
+        $chunk->setX($chunkX);
+        $chunk->setZ($chunkZ);
+        $this->level->setChunk($chunkX, $chunkZ, $chunk);
     }
 
     public function populateChunk($chunkX, $chunkZ)
