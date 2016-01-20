@@ -78,8 +78,8 @@ class SmallLandGenerator extends Generator{
     **-------------↑这上面的s那个地方设置牌子------------*/
 				if ($this->chunk1 === null) {
 					$this->chunk1 = clone $this->level->getChunk($chunkX, $chunkZ);
-					for ($x=0; $x < 16; $x++) { 
-						for ($z=0; $z < 16; $z++) { 
+					for ($x = 0; $x < 16; $x++) {
+						for ($z = 0; $z < 16; $z++) {
 							for ($y=0; $y < 10; $y++) { 
 								if ($x < 4 OR $z < 4) {
 									$this->chunk1->setBlockId($x, $y, $z, Block::AIR);//木方块

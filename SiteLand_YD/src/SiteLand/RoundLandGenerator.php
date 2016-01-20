@@ -65,13 +65,10 @@ class RoundLandGenerator extends Generator
                 for ($y = 0; $y < 10; $y++) {
                     $za = sqrt(49 - $x * $x);
                     $zb = -$za;
-                    for ($z = 8; $z < $za; $z - 1) {
-                        $this->chunk1->setBlockId($x, $y, $z, Block::GRASS);//草
+                    for ($zb; $zb < $za; $zb++) {
+                        $this->chunk1->setBlockId($x, $y, $zb, Block::GRASS);//草
                     }
-                    for ($z = 8; $z > $zb; $z + 1) {
-                        $this->chunk1->setBlockId($x, $y, $z, Block::GRASS);//草
 
-                    }
 
                 }
             }
