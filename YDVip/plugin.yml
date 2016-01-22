@@ -1,0 +1,29 @@
+name: YDVip
+version: 0.1.1
+api: [1.6.0]
+author: labi
+main: YDVip\YDVip
+
+commands:
+  fly:
+    usage: 输入 /fly 开启飞行
+    permission: YDVip.command.fly
+  h:
+    usage: 输入 /h 回复血量
+    permission: YDVip.command.h
+  tp:
+    usage: 输入 /tp <玩家> 强制传送
+    permission: YDVip.command.tp
+
+
+permissions:
+  YDVip:
+    default: true
+    children:
+      YDVip.command.fly:
+        default: true
+      YDVip.command.h:
+        default: true
+      YDVip.command.tp:
+        default: true
+
