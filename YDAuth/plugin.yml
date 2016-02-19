@@ -1,6 +1,6 @@
-name: YDAuth
-version: 0.1.1
+name: AuthorPE
+version: 0.0.1
 api: [1.6.0]
-author: Zzm&labi
-description: YDAuth,form MyWholeWorld
-main: YDAuth\YDAuth
+author: FXXK
+description: 普通的登录插件
+main: Author\Main
